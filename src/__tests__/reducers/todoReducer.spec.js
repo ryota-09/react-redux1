@@ -15,7 +15,10 @@ describe('todoReducerのテスト', () => {
     const newState = todoReducer(initialState, action);
     const todo = new Todo(dummyText);
 
-    expect(newState).toStrictEqual([todo]);
+    //expect(newState).toStrictEqual([todo]);
+    expect(newState[0] instanceof Todo).toStrictEqual(true);
+    expect(newState[0].text).toStrictEqual(dummyText);
+    expect(newState[0].hasCompleted()).toStrictEqual(false);
   });
 
   it('action.type === DELETE_TODOのとき、index番号の要素を削除した配列を返す', () => {
@@ -26,8 +29,14 @@ describe('todoReducerのテスト', () => {
       const text = prefixText + i;
       const action = addTodo(text);
       state = todoReducer(state, action);
+
+      expect(state[i] instanceof Todo).toStrictEqual(true);
+      expect(state[i].text).toStrictEqual(text);
+      expect(state[i].hasCompleted()).toStrictEqual(false);
     }
 
+
+    /*
     const todo0 = new Todo(`${prefixText}0`);
     const todo1 = new Todo(`${prefixText}1`);
     const todo2 = new Todo(`${prefixText}2`);
@@ -36,30 +45,33 @@ describe('todoReducerのテスト', () => {
       todo0,
       todo1,
       todo2
-    ]);
+    ]);*/
 
-    const targetIndex = 1;
-    const deleteAction = deleteTodo(targetIndex);
+    const targetId = state[1].id;
+    const deleteAction = deleteTodo(targetId);
+    const copiedState = [...state];
     state = todoReducer(state, deleteAction);
     expect(state).toStrictEqual([
-      todo0,
-      todo2
+      copiedState[0],
+      copiedState[2]
     ]);
   })
-  
+
   it('action.type === TOGGLE_TODO_COMPLETEDのとき、index番号のcompletedが切り替わった配列を返す', () => {
-      //テスト動作確認用にダミーデータを３件用意
-      let state = [];
-      const addAction = addTodo('ダミー');
-      const targetIndex = 0;
+    //テスト動作確認用にダミーデータを３件用意
+    let state = [];
+    const addAction = addTodo('ダミー');
+    const targetIndex = 0;
 
-      state = todoReducer(state, addAction);
+    state = todoReducer(state, addAction);
 
-      expect( state[targetIndex].hasCompleted()).toStrictEqual(false);
+    expect(state[targetIndex].hasCompleted()).toStrictEqual(false);
 
-      const toggleAction = toggleTodoCompleted(targetIndex);
-      state = todoReducer(state, toggleAction);
+    const id = state[targetIndex].id
 
-      expect( state[targetIndex].hasCompleted()).toStrictEqual(true);
+    const toggleAction = toggleTodoCompleted(id);
+    state = todoReducer(state, toggleAction);
+
+    expect(state[targetIndex].hasCompleted()).toStrictEqual(true);
   });
 })

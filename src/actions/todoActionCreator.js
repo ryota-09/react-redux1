@@ -10,16 +10,16 @@ export const addTodo = (text) => {
   }
 };
 
-export const deleteTodo = (index) => {
+export const deleteTodo = (id) => {
   return {
     type: DELETE_TODO,
-    index
+    id
   }
 };
 
-export const toggleTodoCompleted = (index) => {
+export const toggleTodoCompleted = (id) => {
   return {
     type: TOGGLE_TODO_COMPLETED,
-    index
+    id
   }
 };
